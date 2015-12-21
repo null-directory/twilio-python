@@ -2,7 +2,8 @@ import datetime
 
 from email.utils import parsedate
 from twilio.compat.six import iteritems
-import pytz
+
+from twilio.compat.pytz.gae import pytz
 
 
 def transform_params(parameters):
