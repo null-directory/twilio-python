@@ -1,12 +1,15 @@
-import logging
 import platform
 import os
 
 from twilio.exceptions import TwilioException
-from twilio.rest.resources import Connection
 from twilio.rest.resources import UNSET_TIMEOUT
 from twilio.rest.resources import make_request
 from twilio.version import __version__ as LIBRARY_VERSION
+
+from IgnitionHttp import IgnitionHttpRequest
+
+from system.util import getLogger
+logger = getLogger('twilio')
 
 
 def find_credentials(environ=None):
@@ -24,8 +27,8 @@ def find_credentials(environ=None):
         return None, None
 
 
-def set_twilio_proxy(proxy_url, proxy_port):
-    Connection.set_proxy_info(proxy_url, proxy_port)
+def set_twilio_proxy(proxy_url, proxy_port='8080'):
+    IgnitionHttpRequest.set_proxy_info(proxy_url, proxy_port)
 
 
 class TwilioClient(object):
@@ -58,8 +61,7 @@ values from your Twilio Account at https://www.twilio.com/user/account.
         self.base = base
         self.auth = (account, token)
         self.timeout = timeout
-        self.account_uri = "{0}/{1}/Accounts/{2}".format(base,
-                                                         version, account)
+        self.account_uri = "%(0)s/%(1)s/Accounts/%(2)s" % {'0': base, '1': version, '2': account}
 
     def request(self, path, method=None, vars=None):
         """sends a request and gets a response from the Twilio REST API
@@ -77,7 +79,7 @@ values from your Twilio Account at https://www.twilio.com/user/account.
         This method is only included for backwards compatability reasons.
         It will be removed in a future version
         """
-        logging.warning(":meth:`TwilioRestClient.request` is deprecated and "
+        logging.warn(":meth:`TwilioRestClient.request` is deprecated and "
                         "will be removed in a future version")
 
         vars = vars or {}

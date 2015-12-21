@@ -43,27 +43,29 @@ class TwilioRestException(TwilioException):
             return u("\033[36m\033[49m%s\033[0m") % words
 
         def get_uri(code):
-            return "https://www.twilio.com/docs/errors/{0}".format(code)
+            return "https://www.twilio.com/docs/errors/%(0)s" % {'0': code}
 
         # If it makes sense to print a human readable error message, try to
         # do it. The one problem is that someone might catch this error and
         # try to display the message from it to an end user.
         if hasattr(sys.stderr, 'isatty') and sys.stderr.isatty():
             msg = (
-                "\n{red_error} {request_was}\n\n{http_line}"
-                "\n\n{twilio_returned}\n\n{message}\n".format(
-                    red_error=red("HTTP Error"),
-                    request_was=white("Your request was:"),
-                    http_line=teal("%s %s" % (self.method, self.uri)),
-                    twilio_returned=white(
+                "\n%(red_error)s %(request_was)s\n\n%(http_line)s"
+                "\n\n%(twilio_returned)s\n\n%(message)s\n" % {
+                    'red_error': red("HTTP Error"),
+                    'request_was':white("Your request was:"),
+                    'http_line':teal("%s %s" % (self.method, self.uri)),
+                    'twilio_returned':white(
                         "Twilio returned the following information:"),
-                    message=blue(str(self.msg))
-                ))
+                    'message':blue(str(self.msg))
+                }
+                )
             if self.code:
-                msg = "".join([msg, "\n{more_info}\n\n{uri}\n\n".format(
-                    more_info=white("More information may be available here:"),
-                    uri=blue(get_uri(self.code))),
+                msg = "".join([msg, "\n%(more_info)s\n\n%(uri)s\n\n" % {
+                    'more_info': white("More information may be available here:"),
+                    'uri': blue(get_uri(self.code))
+                    },
                 ])
             return msg
         else:
-            return "HTTP {0} error: {1}".format(self.status, self.msg)
+            return "HTTP %(0)s error: %(1)s" % {'0': self.status, '1': self.msg}

@@ -1,4 +1,6 @@
-import logging
+from system.util import getLogger
+from IgnitionHttp import IgnitionHttpRequest
+
 import os
 import platform
 
@@ -10,13 +12,12 @@ from six import (
 )
 from ...compat import urlencode
 from ...compat import urlparse
-from ...compat import urlunparse
+from urlparse import urlunparse
 
 from ... import __version__
 from ...exceptions import TwilioException
 from ..exceptions import TwilioRestException
-from .connection import Connection
-from .imports import parse_qs, httplib2, json
+from .imports import parse_qs, json
 from .util import (
     parse_iso_date,
     parse_rfc2822_date,
@@ -24,7 +25,7 @@ from .util import (
     UNSET_TIMEOUT,
 )
 
-logger = logging.getLogger('twilio')
+logger = getLogger('twilio')
 
 
 class Response(object):
@@ -34,7 +35,7 @@ class Response(object):
     def __init__(self, httplib_resp, content, url):
         self.content = content
         self.cached = False
-        self.status_code = int(httplib_resp.status)
+        self.status_code = int(httplib_resp)
         self.ok = self.status_code < 400
         self.url = url
 
@@ -73,51 +74,20 @@ def make_request(method, url, params=None, data=None, headers=None,
 
     See the requests documentation for explanation of all these parameters
 
-    Currently proxies, files, and cookies are all ignored
+    We'll be using the built-in Ignition system.net function calls for these requests.
+    This is a migration from httplib2.
     """
-    http = httplib2.Http(
-        timeout=timeout,
-        ca_certs=get_cert_file(),
-        proxy_info=Connection.proxy_info(),
-    )
-    http.follow_redirects = allow_redirects
+    response_status_code, content, url = IgnitionHttpRequest.make_request(method, url,
+                                                connectTimeout=timeout, readTimeout=timeout,
+                                                headerValues=headers,
+                                                data=data, queryParams=params,
+                                                username=auth[0], password=auth[1]
+                                                #proxy_host= ???, proxy_port=???,
+                                                #bypassCertValidation=???
+                                                )
 
-    if auth is not None:
-        http.add_credentials(auth[0], auth[1])
-
-    def encode_atom(atom):
-            if isinstance(atom, (integer_types, binary_type)):
-                return atom
-            elif isinstance(atom, string_types):
-                return atom.encode('utf-8')
-            else:
-                raise ValueError('list elements should be an integer, '
-                                 'binary, or string')
-
-    if data is not None:
-        udata = {}
-        for k, v in iteritems(data):
-            key = k.encode('utf-8')
-            if isinstance(v, (list, tuple, set)):
-                udata[key] = [encode_atom(x) for x in v]
-            elif isinstance(v, (integer_types, binary_type, string_types)):
-                udata[key] = encode_atom(v)
-            else:
-                raise ValueError('data should be an integer, '
-                                 'binary, or string, or sequence ')
-        data = urlencode(udata, doseq=True)
-
-    if params is not None:
-        enc_params = urlencode(params, doseq=True)
-        if urlparse(url).query:
-            url = '%s&%s' % (url, enc_params)
-        else:
-            url = '%s?%s' % (url, enc_params)
-
-    resp, content = http.request(url, method, headers=headers, body=data)
-
-    # Format httplib2 request as requests object
-    return Response(resp, content.decode('utf-8'), url)
+    # Format system.net.httpPost/Get request as requests object
+    return Response(response_status_code, content.decode('utf-8'), url)
 
 
 def make_twilio_request(method, uri, **kwargs):

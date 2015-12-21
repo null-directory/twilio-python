@@ -31,8 +31,8 @@ class TwilioTaskRouterClient(TwilioClient):
         """
         super(TwilioTaskRouterClient, self).__init__(account, token, base,
                                                      version, timeout)
-        self.base_uri = "{0}/{1}".format(base, version)
-        self.workspace_uri = "{0}/Workspaces".format(self.base_uri)
+        self.base_uri = "%(0)s/%(1)s" % {'0': base, '1': version}
+        self.workspace_uri = "%(0)s/Workspaces" % {'0': self.base_uri}
 
         self.workspaces = Workspaces(self.base_uri, self.auth, timeout)
 
@@ -41,7 +41,7 @@ class TwilioTaskRouterClient(TwilioClient):
         Return a :class:`Activities` instance for the :class:`Activity`
         with the given workspace_sid
         """
-        base_uri = "{0}/{1}".format(self.workspace_uri, workspace_sid)
+        base_uri = "%(0)s/%(1)s" % {'0': self.workspace_uri, '1': workspace_sid}
         return Activities(base_uri, self.auth, self.timeout)
 
     def events(self, workspace_sid):
@@ -49,7 +49,7 @@ class TwilioTaskRouterClient(TwilioClient):
         Return a :class:`Events` instance for the :class:`Event` with the given
         workspace_sid
         """
-        base_uri = "{0}/{1}".format(self.workspace_uri, workspace_sid)
+        base_uri = "%(0)s/%(1)s" % {'0': self.workspace_uri, '1': workspace_sid}
         return Events(base_uri, self.auth, self.timeout)
 
     def reservations(self, workspace_sid, task_sid):
@@ -57,8 +57,7 @@ class TwilioTaskRouterClient(TwilioClient):
         Return a :class:`Reservations` instance for the :class:`Reservation`
         with the given workspace_sid ans task_sid
         """
-        base_uri = "{0}/{1}/Tasks/{2}".format(self.workspace_uri,
-                                              workspace_sid, task_sid)
+        base_uri = "%(0)s/%(1)s/Tasks/%(2)s" % {'0': self.workspace_uri, '1': workspace_sid, '2': task_sid}
         return Reservations(base_uri, self.auth, self.timeout)
 
     def worker_reservations(self, workspace_sid, worker_sid):
@@ -66,8 +65,7 @@ class TwilioTaskRouterClient(TwilioClient):
         Return a :class:`Reservations` instance for the :class:`Reservation`
         with the given workspace_sid ans worker_sid
         """
-        base_uri = "{0}/{1}/Workers/{2}".format(self.workspace_uri,
-                                                workspace_sid, worker_sid)
+        base_uri = "%(0)s/%(1)s/Workers/%(2)s" % {'0': self.workspace_uri, '1': workspace_sid, '2': worker_sid}
         return Reservations(base_uri, self.auth, self.timeout)
 
     def task_queues(self, workspace_sid):
@@ -75,7 +73,7 @@ class TwilioTaskRouterClient(TwilioClient):
         Return a :class:`TaskQueues` instance for the :class:`TaskQueue` with
         the given workspace_sid
         """
-        base_uri = "{0}/{1}".format(self.workspace_uri, workspace_sid)
+        base_uri = "%(0)s/%(1)s" % {'0': self.workspace_uri, '1': workspace_sid}
         return TaskQueues(base_uri, self.auth, self.timeout)
 
     def tasks(self, workspace_sid):
@@ -83,7 +81,7 @@ class TwilioTaskRouterClient(TwilioClient):
         Return a :class:`Tasks` instance for the :class:`Task` with the given
         workspace_sid
         """
-        base_uri = "{0}/{1}".format(self.workspace_uri, workspace_sid)
+        base_uri = "%(0)s/%(1)s" % {'0': self.workspace_uri, '1': workspace_sid}
         return Tasks(base_uri, self.auth, self.timeout)
 
     def workers(self, workspace_sid):
@@ -91,7 +89,7 @@ class TwilioTaskRouterClient(TwilioClient):
         Return a :class:`Workers` instance for the :class:`Worker` with the
         given workspace_sid
         """
-        base_uri = "{0}/{1}".format(self.workspace_uri, workspace_sid)
+        base_uri = "%(0)s/%(1)s" % {'0': self.workspace_uri, '1': workspace_sid}
         return Workers(base_uri, self.auth, self.timeout)
 
     def workflows(self, workspace_sid):
@@ -99,5 +97,5 @@ class TwilioTaskRouterClient(TwilioClient):
         Return a :class:`Workflows` instance for the :class:`Workflow` with the
         given workspace_sid
         """
-        base_uri = "{0}/{1}".format(self.workspace_uri, workspace_sid)
+        base_uri = "%(0)s/%(1)s" % {'0': self.workspace_uri, '1': workspace_sid}
         return Workflows(base_uri, self.auth, self.timeout)

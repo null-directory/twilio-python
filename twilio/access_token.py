@@ -77,7 +77,7 @@ class AccessToken(object):
             grants[grant.key] = grant.to_payload()
 
         payload = {
-            "jti": '{0}-{1}'.format(self.signing_key_sid, now),
+            "jti": '%(0)s-%(1)s' % {'0': self.signing_key_sid, '1': now},
             "iss": self.signing_key_sid,
             "sub": self.account_sid,
             "exp": now + self.ttl,

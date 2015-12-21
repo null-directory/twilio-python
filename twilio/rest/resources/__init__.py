@@ -23,7 +23,6 @@ from .call_feedback import (
     CallFeedbackFactory, CallFeedback, CallFeedbackSummary,
     CallFeedbackSummaryInstance
 )
-from .connection import Connection
 from .sandboxes import Sandbox, Sandboxes
 from .sms_messages import (
     Sms, SmsMessage, SmsMessages, ShortCode, ShortCodes)

@@ -25,7 +25,7 @@ class TwilioPricingClient(TwilioClient):
         super(TwilioPricingClient, self).__init__(account, token, base,
                                                   version, timeout)
 
-        self.uri_base = "{}/{}".format(base, version)
+        self.uri_base = "%s/%s" % (base, version)
 
         self.voice = Voice(self.uri_base, self.auth, self.timeout)
         self.phone_numbers = PhoneNumbers(self.uri_base, self.auth,
@@ -36,7 +36,7 @@ class TwilioPricingClient(TwilioClient):
         Returns a :class:`MessagingCountries` resource
         :return: MessagingCountries
         """
-        messaging_countries_uri = "{0}/Messaging".format(
-            self.uri_base)
+        messaging_countries_uri = "%(0)s/Messaging" % {'0': self.uri_base}
+        
         return MessagingCountries(messaging_countries_uri, self.auth,
                                   self.timeout)
