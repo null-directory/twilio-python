@@ -1,7 +1,7 @@
 import datetime
 
 from email.utils import parsedate
-from six import iteritems
+from twilio.compat.six import iteritems
 import pytz
 
 

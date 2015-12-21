@@ -5,7 +5,7 @@ from hashlib import sha1
 
 from . import jwt
 from .compat import izip, urlencode
-from six import iteritems, PY3
+from twilio.compat.six import iteritems, PY3
 
 
 class RequestValidator(object):

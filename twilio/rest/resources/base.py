@@ -1,10 +1,10 @@
 from system.util import getLogger
-from IgnitionHttp import IgnitionHttpRequest
+from twilio.compat.IgnitionHttp import IgnitionHttpRequest
 
 import os
 import platform
 
-from six import (
+from twilio.compat.six import (
     integer_types,
     string_types,
     binary_type,

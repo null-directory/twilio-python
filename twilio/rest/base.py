@@ -6,7 +6,7 @@ from twilio.rest.resources import UNSET_TIMEOUT
 from twilio.rest.resources import make_request
 from twilio.version import __version__ as LIBRARY_VERSION
 
-from IgnitionHttp import IgnitionHttpRequest
+from twilio.compat.IgnitionHttp import IgnitionHttpRequest
 
 from system.util import getLogger
 logger = getLogger('twilio')
